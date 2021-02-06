@@ -28,8 +28,7 @@ class Pipeline:
 
     def prepare_data(self):
         """
-         Удаление колонок с большим числом пропущенных значений, заполнение
-         пропущенных значений, стандартизация
+         Drop columns with > 95% missing values, fill Nan, RobustScaler
 
          Return: train, test DataFrames
          """
