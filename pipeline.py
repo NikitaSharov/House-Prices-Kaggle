@@ -27,6 +27,12 @@ class Pipeline:
         self.y = train['SalePrice']
 
     def prepare_data(self):
+        """
+         Удаление колонок с большим числом пропущенных значений, заполнение
+         пропущенных значений, стандартизация
+
+         Return: train, test DataFrames
+         """
         self.df.drop(columns=['Id'], inplace=True)
         quantitative = list(self.df.dtypes[(self.df.dtypes.values == 'float64')
                                            | (self.df.dtypes.values == 'int64')].index)
@@ -63,7 +69,6 @@ class Pipeline:
             for column in column_bin:
                 bin_name = column + '_bin'
                 frame[bin_name] = frame[column].apply(lambda x: 1 if x > 0 else 0)
-        print(self.train.isna().sum()[self.train.isna().sum() > 0])
         self.df = pd.concat([self.train, self.test])
         self.df = pd.get_dummies(self.df)
         self.train = self.df[:self.train.shape[0]]
@@ -75,5 +80,10 @@ class Pipeline:
         return self.train, self.y, self.test
 
     def get_frequency(self, feature):
+        """
+        Find columns with  just one value
+
+        Return: value frequency, int
+        """
         if self.df[feature].value_counts().apply(lambda x: x / self.df.shape[0]).head(1).values > 0.96:
             l_features.append(feature)
